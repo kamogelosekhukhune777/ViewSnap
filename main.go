@@ -4,19 +4,29 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 
 	"github.com/gorilla/mux"
 )
 
+var (
+	homeTemplate    *template.Template
+	contactTemplate *template.Template
+)
+
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
-	fmt.Fprintln(w, "<h1>Welcome to my ViewSnap!</h1>")
+	//fmt.Fprintln(w, "<h1>Welcome to my ViewSnap!</h1>")
+	if err := homeTemplate.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintln(w, "<h1>Contact Page!</h1>")
-	fmt.Fprintln(w, "To get in touch, Please send an email to <a href=\"mailto:support@ViewSnap.com\">support@ViewSnap.com</a>.")
+	if err := contactTemplate.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +41,15 @@ func notfound(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	var err error
+	homeTemplate, err = template.ParseFiles("views/home.html")
+	if err != nil {
+		panic(err)
+	}
+	contactTemplate, err = template.ParseFiles("views/contact.html")
+	if err != nil {
+		panic(err)
+	}
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
