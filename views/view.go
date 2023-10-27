@@ -4,11 +4,14 @@ import "html/template"
 
 type View struct {
 	Template *template.Template
-	Layout
+	Layout   string
 }
 
-func NewView(files ...string) *View {
-	files = append(files, "views/layouts/footer.html")
+func NewView(Layout string, files ...string) *View {
+	files = append(files,
+		"views/layouts/footer.html",
+		"views/layouts/bootstrap.html",
+	)
 
 	t, err := template.ParseFiles(files...)
 	if err != nil {
@@ -16,5 +19,6 @@ func NewView(files ...string) *View {
 	}
 	return &View{
 		Template: t,
+		Layout:   Layout,
 	}
 }

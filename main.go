@@ -18,7 +18,7 @@ var (
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
-	err := homeView.Template.Execute(w, nil)
+	err := homeView.Template.ExecuteTemplate(w, homeView.Layout, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -26,14 +26,14 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	if err := contactView.Template.Execute(w, nil); err != nil {
+	if err := contactView.Template.ExecuteTemplate(w, contactView.Layout, nil); err != nil {
 		panic(err)
 	}
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
-	if err := faqView.Template.Execute(w, nil); err != nil {
+	if err := faqView.Template.ExecuteTemplate(w, faqView.Layout, nil); err != nil {
 		panic(err)
 	}
 }
@@ -41,16 +41,16 @@ func faq(w http.ResponseWriter, r *http.Request) {
 func notfound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusNotFound)
-	if err := notfoundView.Template.Execute(w, nil); err != nil {
+	if err := notfoundView.Template.ExecuteTemplate(w, notfoundView.Layout, nil); err != nil {
 		panic(err)
 	}
 }
 
 func main() {
-	homeView = views.NewView("views/home.html")
-	contactView = views.NewView("views/contact.html")
-	faqView = views.NewView("views/faq.html")
-	notfoundView = views.NewView("views/notfound.html")
+	homeView = views.NewView("bootstrap", "views/home.html")
+	contactView = views.NewView("bootstrap", "views/contact.html")
+	faqView = views.NewView("bootstrap", "views/faq.html")
+	notfoundView = views.NewView("bootstrap", "views/notfound.html")
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
