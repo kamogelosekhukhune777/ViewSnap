@@ -2,6 +2,7 @@ package views
 
 import (
 	"html/template"
+	"net/http"
 	"path/filepath"
 )
 
@@ -29,11 +30,16 @@ func NewView(Layout string, files ...string) *View {
 }
 
 // layoutFiles return a slice of string representing
-// the layout files used in our web app
+// the layout files used in our web app.
 func layoutFiles() []string {
 	files, err := filepath.Glob(LayoutDir + "*" + ".html")
 	if err != nil {
 		panic(err)
 	}
 	return files
+}
+
+// Render is used to render the View with the predefined layout.
+func (v *View) Render(w http.ResponseWriter, data interface{}) error {
+	return v.Template.ExecuteTemplate(w, v.Layout, data)
 }
