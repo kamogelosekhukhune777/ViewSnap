@@ -1,6 +1,6 @@
 package views
 
-import "text/template"
+import "html/template"
 
 type View struct {
 	Template *template.Template
@@ -13,6 +13,7 @@ func NewView(files ...string) *View {
 	if err != nil {
 		panic(err)
 	}
+
 	return &View{
 		Template: t,
 	}

@@ -4,52 +4,53 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"text/template"
 
 	"github.com/gorilla/mux"
+	"github.com/kamogelosekhukhune777/ViewSnap/views"
 )
 
 var (
-	homeTemplate    *template.Template
-	contactTemplate *template.Template
+	homeView     *views.View
+	contactView  *views.View
+	faqView      *views.View
+	notfoundView *views.View
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
-	//fmt.Fprintln(w, "<h1>Welcome to my ViewSnap!</h1>")
-	if err := homeTemplate.Execute(w, nil); err != nil {
+	err := homeView.Template.Execute(w, nil)
+	if err != nil {
 		panic(err)
 	}
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	if err := contactTemplate.Execute(w, nil); err != nil {
+	if err := contactView.Template.Execute(w, nil); err != nil {
 		panic(err)
 	}
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
-	fmt.Fprintf(w, "<h1>Frquently Asked Questions</h1><p>Here is a list commonly asked questions.</p>")
+	if err := faqView.Template.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func notfound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, "<h1>Sorry, but we couldn't find the page you were looking for.</h1>")
+	if err := notfoundView.Template.Execute(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func main() {
-	var err error
-	homeTemplate, err = template.ParseFiles("views/home.html", "views/layouts/footer.html")
-	if err != nil {
-		panic(err)
-	}
-	contactTemplate, err = template.ParseFiles("views/contact.html", "views/layouts/footer.html")
-	if err != nil {
-		panic(err)
-	}
+	homeView = views.NewView("views/home.html")
+	contactView = views.NewView("views/contact.html")
+	faqView = views.NewView("views/faq.html")
+	notfoundView = views.NewView("views/notfound.html")
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
