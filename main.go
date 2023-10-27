@@ -6,31 +6,51 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/kamogelosekhukhune777/ViewSnap/views"
+)
+
+var (
+	homeView     *views.View
+	contactView  *views.View
+	faqView      *views.View
+	notfoundView *views.View
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
-	fmt.Fprintln(w, "<h1>Welcome to my ViewSnap!</h1>")
+	err := homeView.Render(w, nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintln(w, "<h1>Contact Page!</h1>")
-	fmt.Fprintln(w, "To get in touch, Please send an email to <a href=\"mailto:support@ViewSnap.com\">support@ViewSnap.com</a>.")
+	if err := contactView.Render(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func faq(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
-	fmt.Fprintf(w, "<h1>Frquently Asked Questions</h1><p>Here is a list commonly asked questions.</p>")
+	if err := faqView.Render(w, nil); err != nil {
+		panic(err)
+	}
 }
 
 func notfound(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, "<h1>Sorry, but we couldn't find the page you were looking for.</h1>")
+	if err := notfoundView.Template.ExecuteTemplate(w, notfoundView.Layout, nil); err != nil {
+		panic(err)
+	}
 }
 
 func main() {
+	homeView = views.NewView("bootstrap", "views/home.html")
+	contactView = views.NewView("bootstrap", "views/contact.html")
+	faqView = views.NewView("bootstrap", "views/faq.html")
+	notfoundView = views.NewView("bootstrap", "views/notfound.html")
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 	r.HandleFunc("/contact", contact)
