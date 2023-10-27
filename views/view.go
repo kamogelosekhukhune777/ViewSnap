@@ -4,6 +4,7 @@ import "html/template"
 
 type View struct {
 	Template *template.Template
+	Layout
 }
 
 func NewView(files ...string) *View {
@@ -13,7 +14,6 @@ func NewView(files ...string) *View {
 	if err != nil {
 		panic(err)
 	}
-
 	return &View{
 		Template: t,
 	}
